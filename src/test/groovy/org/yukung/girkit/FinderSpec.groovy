@@ -16,6 +16,7 @@
 
 package org.yukung.girkit
 
+import spock.lang.IgnoreIf
 import spock.lang.Specification
 
 /**
@@ -23,6 +24,7 @@ import spock.lang.Specification
  */
 class FinderSpec extends Specification {
 
+    @IgnoreIf({ env.CI })
     def "should find the IRKit using DNS-SD"() {
         given:
         def finder = new Finder()
