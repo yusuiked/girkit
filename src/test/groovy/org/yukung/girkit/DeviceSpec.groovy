@@ -39,24 +39,24 @@ class DeviceSpec extends Specification {
         }
     }
 
-    def "should create device instance from Finder"() {
+    @IgnoreIf({ env.CI })
+    def "should get messages"() {
         given:
-        GroovyMock(Device, global: true)
-        Device.find() >> [new Device(Inet4Address.getByName('192.168.0.10'), 'irkitd2a4')]
-
-        when:
         def device = Device.find().first()
 
+        when:
+        def msg = device.getMessages()
+
         then:
-        device.class == Device
+        msg != null
 
         and:
-        device.format == 'raw'
+        msg.format == 'raw'
 
         and:
-        device.freq == 38
+        msg.freq == 38
 
-        and;
-        device.data.class == ArrayList
+        and:
+        msg.data.class == ArrayList
     }
 }

@@ -16,7 +16,12 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonSlurper
+import groovyx.net.http.RESTClient
+
 import javax.jmdns.JmDNS
+
+import static groovyx.net.http.ContentType.TEXT
 
 /**
  * @author yukung
@@ -41,5 +46,11 @@ class Device {
         }
         jmdns.close()
         hosts
+    }
+
+    def getMessages() {
+        def client = new RESTClient("http://$address.hostAddress/")
+        def res = client.get(path: 'messages', contentType: TEXT)
+        res.data.length > 0 ? new JsonSlurper().parse(res.data) : [:]
     }
 }
