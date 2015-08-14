@@ -16,23 +16,30 @@
 
 package org.yukung.girkit
 
-import spock.lang.IgnoreIf
-import spock.lang.Specification
+import javax.jmdns.JmDNS
 
 /**
  * @author yukung
  */
-class FinderSpec extends Specification {
+class Device {
+    InetAddress address
+    String instanceName
 
-    @IgnoreIf({ env.CI })
-    def "should find the IRKit using DNS-SD"() {
-        when:
-        def res = Finder.find()
+    Device(InetAddress address, String instanceName) {
+        this.address = address
+        this.instanceName = instanceName
+    }
 
-        then:
-        res.class == ArrayList
-
-        and:
-        res.first() =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/
+    static List<Device> find() {
+        def hosts = []
+        def jmdns = JmDNS.create()
+        def services = jmdns.list('_irkit._tcp.local.')
+        services.each { service ->
+            if (service.name =~ /(?i)irkit/) {
+                service.inet4Addresses.each { hosts << new Device(it, service.name) }
+            }
+        }
+        jmdns.close()
+        hosts
     }
 }
