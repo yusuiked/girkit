@@ -23,7 +23,7 @@ import javax.jmdns.JmDNS
  */
 class Finder {
 
-    List<Inet4Address> find() {
+    static List<Inet4Address> find() {
         def hosts = []
         def jmdns = JmDNS.create()
         def services = jmdns.list('_irkit._tcp.local.')

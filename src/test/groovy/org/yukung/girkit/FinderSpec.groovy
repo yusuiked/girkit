@@ -26,11 +26,8 @@ class FinderSpec extends Specification {
 
     @IgnoreIf({ env.CI })
     def "should find the IRKit using DNS-SD"() {
-        given:
-        def finder = new Finder()
-
         when:
-        def res = finder.find()
+        def res = Finder.find()
 
         then:
         res.class == ArrayList
