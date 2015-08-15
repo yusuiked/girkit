@@ -32,9 +32,8 @@ class Device {
     InetAddress address
     String instanceName
 
-    Device(InetAddress address, String instanceName) {
-        this.address = address
-        this.instanceName = instanceName
+    private url() {
+        "http://$address.hostAddress/"
     }
 
     static List<Device> find() {
@@ -43,7 +42,7 @@ class Device {
         def services = jmdns.list('_irkit._tcp.local.')
         services.each { service ->
             if (service.name =~ /(?i)irkit/) {
-                service.inet4Addresses.each { hosts << new Device(it, service.name) }
+                service.inet4Addresses.each { hosts << new Device(address: it, instanceName: service.name) }
             }
         }
         jmdns.close()
@@ -51,18 +50,18 @@ class Device {
     }
 
     def getMessages() {
-        def client = new RESTClient("http://$address.hostAddress/")
+        def client = new RESTClient(url())
         def res = client.get(path: 'messages', contentType: TEXT)
         res.data.length > 0 ? new JsonSlurper().parse(res.data) : [:]
     }
 
     def postMessages(data) {
-        def client = new RESTClient("http://$address.hostAddress/")
+        def client = new RESTClient(url())
         client.post(path: 'messages', contentType: TEXT, body: JsonOutput.toJson(data))
     }
 
     def getToken() {
-        def client = new RESTClient("http://$address.hostAddress/")
+        def client = new RESTClient(url())
         def res = client.post(path: 'keys', contentType: TEXT, body: '{}')
         res.status == 200 ? new JsonSlurper().parse(res.data).clienttoken : ''
     }

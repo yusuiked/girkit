@@ -117,7 +117,7 @@ class DeviceSpec extends Specification {
 
     def "should throw IllegalArgumentException with invalid token"() {
         given:
-        def device = new Device(Inet4Address.getByName("127.0.0.1"), 'irkitd2a4')   // fake device
+        def device = new Device(address: Inet4Address.getByName("127.0.0.1"))   // fake device
         def token = 123456789012345
 
         when:
