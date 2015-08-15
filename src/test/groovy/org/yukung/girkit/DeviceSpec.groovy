@@ -16,6 +16,8 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonSlurper
+import groovyx.net.http.HttpResponseException
 import spock.lang.IgnoreIf
 import spock.lang.Specification
 
@@ -58,5 +60,18 @@ class DeviceSpec extends Specification {
 
         and:
         msg.data.class == ArrayList
+    }
+
+    @IgnoreIf({ env.CI })
+    def "should post messages"() {
+        given:
+        def device = Device.find().first()
+        def msg = new JsonSlurper().parse(getClass().getResource('/test.json'))
+
+        when:
+        device.postMessages(msg)
+
+        then:
+        notThrown(HttpResponseException)
     }
 }

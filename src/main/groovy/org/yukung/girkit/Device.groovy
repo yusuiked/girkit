@@ -16,6 +16,7 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovyx.net.http.RESTClient
 
@@ -52,5 +53,10 @@ class Device {
         def client = new RESTClient("http://$address.hostAddress/")
         def res = client.get(path: 'messages', contentType: TEXT)
         res.data.length > 0 ? new JsonSlurper().parse(res.data) : [:]
+    }
+
+    def postMessages(data) {
+        def client = new RESTClient("http://$address.hostAddress/")
+        client.post(path: 'messages', contentType: TEXT, body: JsonOutput.toJson(data))
     }
 }
