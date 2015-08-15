@@ -51,6 +51,16 @@ idea {
     }
 }
 
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+    from groovydoc.destinationDir
+    classifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.5'
 }
