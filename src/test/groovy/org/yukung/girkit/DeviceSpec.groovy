@@ -89,4 +89,35 @@ class DeviceSpec extends Specification {
         and:
         token ==~ /[0-9A-Z]+/
     }
+
+    @IgnoreIf({ env.CI })
+    def "should get clientkey and deviceid"() {
+        given:
+        def device = Device.find().first()
+        def token = device.getToken()
+
+        when:
+        def res = device.getClientKeyAndDeviceId(token)
+
+        then:
+        res != null
+
+        and:
+        res.deviceid ==~ /[0-9A-Z]+/
+
+        and:
+        res.clientkey ==~ /[0-9A-Z]+/
+    }
+
+    def "should throw IllegalArgumentException with invalid token"() {
+        given:
+        def device = new Device(Inet4Address.getByName("127.0.0.1"), 'irkitd2a4')   // fake device
+        def token = 123456789012345
+
+        when:
+        device.getClientKeyAndDeviceId(token)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
 }

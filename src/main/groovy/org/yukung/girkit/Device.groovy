@@ -23,6 +23,7 @@ import groovyx.net.http.RESTClient
 import javax.jmdns.JmDNS
 
 import static groovyx.net.http.ContentType.TEXT
+import static groovyx.net.http.ContentType.URLENC
 
 /**
  * @author yukung
@@ -64,5 +65,14 @@ class Device {
         def client = new RESTClient("http://$address.hostAddress/")
         def res = client.post(path: 'keys', contentType: TEXT, body: '{}')
         res.status == 200 ? new JsonSlurper().parse(res.data).clienttoken : ''
+    }
+
+    def getClientKeyAndDeviceId(clientToken) {
+        if (!(clientToken instanceof String)) {
+            throw new IllegalArgumentException('token must be String')
+        }
+        def client = new RESTClient("https://api.getirkit.com/1/")
+        def res = client.post(path: 'keys', requestContentType: URLENC, body: [clienttoken: clientToken])
+        res.status == 200 ? res.data : [:]
     }
 }
