@@ -87,7 +87,7 @@ class DeviceSpec extends Specification {
         token.class == String
 
         and:
-        token ==~ /[0-9A-Z]+/
+        token ==~ /^[0-9A-Z]+$/
     }
 
     @IgnoreIf({ env.CI })
@@ -103,10 +103,16 @@ class DeviceSpec extends Specification {
         res != null
 
         and:
-        res.deviceid ==~ /[0-9A-Z]+/
+        res.deviceid.class == String
 
         and:
-        res.clientkey ==~ /[0-9A-Z]+/
+        res.deviceid ==~ /^[0-9A-Z]+$/
+
+        and:
+        res.clientkey.class == String
+
+        and:
+        res.clientkey ==~ /^[0-9A-Z]+$/
     }
 
     def "should throw IllegalArgumentException with invalid token"() {
