@@ -16,6 +16,7 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonSlurper
 import groovyx.net.http.HttpResponseException
 import spock.lang.IgnoreIf
 import spock.lang.Specification
@@ -66,5 +67,19 @@ class InternetAPISpec extends Specification {
 
         and:
         e.message == 'Unauthorized'
+    }
+
+    def "should post messages"() {
+        given:
+        def CLIENT_KEY = System.getenv('CLIENT_KEY')
+        def DEVICE_ID = System.getenv('DEVICE_ID')
+        def device = new InternetAPI(clientKey: CLIENT_KEY, deviceId: DEVICE_ID)
+        def irData = new JsonSlurper().parse(getClass().getResource('/test.json'))
+
+        when:
+        device.postMessages(irData)
+
+        then:
+        notThrown(HttpResponseException)
     }
 }

@@ -16,9 +16,11 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonOutput
 import groovy.transform.Immutable
 import groovyx.net.http.RESTClient
 
+import static groovyx.net.http.ContentType.URLENC
 /**
  * @author yukung
  */
@@ -35,5 +37,11 @@ class InternetAPI {
         def client = new RESTClient(url())
         def res = client.get(path: 'messages', query: query)
         res.data.size() > 0 ? res.data : [:]
+    }
+
+    def postMessages(irData) {
+        def body = [deviceid: deviceId, clientkey: clientKey, message: JsonOutput.toJson(irData)]
+        def client = new RESTClient(url())
+        client.post(path: 'messages', contentType: URLENC, body: body)
     }
 }
