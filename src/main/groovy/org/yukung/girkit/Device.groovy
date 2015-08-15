@@ -59,4 +59,10 @@ class Device {
         def client = new RESTClient("http://$address.hostAddress/")
         client.post(path: 'messages', contentType: TEXT, body: JsonOutput.toJson(data))
     }
+
+    def getToken() {
+        def client = new RESTClient("http://$address.hostAddress/")
+        def res = client.post(path: 'keys', contentType: TEXT, body: '{}')
+        res.status == 200 ? new JsonSlurper().parse(res.data).clienttoken : ''
+    }
 }

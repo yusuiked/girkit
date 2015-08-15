@@ -74,4 +74,19 @@ class DeviceSpec extends Specification {
         then:
         notThrown(HttpResponseException)
     }
+
+    @IgnoreIf({ env.CI })
+    def "should get token"() {
+        given:
+        def device = Device.find().first()
+
+        when:
+        def token = device.getToken()
+
+        then:
+        token.class == String
+
+        and:
+        token ==~ /[0-9A-Z]+/
+    }
 }
