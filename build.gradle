@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+plugins {
+    id 'groovy'
+    id 'idea'
+}
+
 ext {
     javaVersion = JavaVersion.VERSION_1_8
 }
-
-apply plugin: 'groovy'
-apply plugin: 'idea'
 
 description = 'IRKit client for Groovy'
 group = 'org.yukung'
