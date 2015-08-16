@@ -19,6 +19,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.3.1'
+    id 'net.researchgate.release' version '2.2.0'
 }
 
 ext {
@@ -27,7 +28,6 @@ ext {
 
 description = 'IRKit client for Groovy'
 group = 'org.yukung'
-version = '0.0.1-SNAPSHOT'
 
 targetCompatibility = sourceCompatibility = javaVersion
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
