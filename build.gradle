@@ -17,6 +17,7 @@
 plugins {
     id 'groovy'
     id 'idea'
+    id 'maven-publish'
 }
 
 ext {
@@ -61,6 +62,43 @@ task javadocJar(type: Jar, dependsOn: groovydoc) {
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            final github = 'https://github.com/yukung/girkit'
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = DELEGATE_FIRST
+                    name project.name
+                    description project.description
+                    url github
+                    scm {
+                        url "${github}.git"
+                        connection "scm:git:${github}.git"
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'yukung'
+                            name 'Yusuke Ikeda'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
