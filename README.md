@@ -2,6 +2,7 @@ Groovy-IRKit
 ====
 
 [![Circle CI](https://circleci.com/gh/yukung/girkit.svg?style=shield&circle-token=a9d95fde08f43bd44a702f447087e8e329d01ddc)](https://circleci.com/gh/yukung/girkit)
+[![Download](https://api.bintray.com/packages/yukung/maven/girkit/images/download.svg)](https://bintray.com/yukung/maven/girkit/_latestVersion)
 
 [IRKit](http://getirkit.com) client for Groovy, inspired by [shokai/ruby-irkit](https://github.com/shokai/ruby-irkit).
 
@@ -108,7 +109,25 @@ irData.dump()
 Installation
 ----
 
-TBD
+Available from jCenter repository.
+
+#### Grape
+
+```groovy
+@Grab(group='org.yukung', module='girkit', version='0.0.1')
+```
+
+#### Gradle
+
+```gradle
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile group: 'org.yukung', name: 'girkit', version: '0.0.1'
+}
+```
 
 Author
 ----
