@@ -108,7 +108,25 @@ irData.dump()
 Installation
 ----
 
-TBD
+Available from jCenter repository.
+
+#### Grape
+
+```groovy
+@Grab(group='org.yukung', module='girkit', version='0.0.1')
+```
+
+#### Gradle
+
+```gradle
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile group: 'org.yukung', name: 'girkit', version: '0.0.1'
+}
+```
 
 Author
 ----
