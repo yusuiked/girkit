@@ -16,17 +16,33 @@
 
 package org.yukung.girkit
 
-cli = new CliBuilder(usage: 'girkit [option] <command>', header: 'options:')
+cli = new CliBuilder(usage: 'girkit [option] <command>', header: 'options:', footer: """
+e.g.
+ \$ girkit --get tv_on
+ \$ girkit --post tv_on
+ \$ girkit --post tv_on --address 192.168.0.123
+ \$ girkit --delete tv_on
+ \$ girkit --device:add myhouse
+ \$ girkit --post tv_on --device myhouse
+ \$ girkit --device:delete myhouse
+""")
 
 cli.with {
     v longOpt: 'version', 'show version'
+    h longOpt: 'help', 'show help'
 }
 
 options = cli.parse args
+if (!options) System.exit 1
 
 if (options.v) {
     def prop = new Properties()
     getClass().getResourceAsStream('/build-receipt.properties').withStream { input -> prop.load(input) }
     println "IRKit Client for Groovy v${prop.version}"
+    System.exit 0
+}
+
+if (options.h) {
+    cli.usage()
     System.exit 0
 }
