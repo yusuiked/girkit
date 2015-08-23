@@ -47,6 +47,10 @@ dependencies {
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
 
+processResources {
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: project.version]
+}
+
 idea {
     project {
         jdkName = javaVersion
