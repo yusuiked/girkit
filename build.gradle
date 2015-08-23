@@ -16,6 +16,7 @@
 
 plugins {
     id 'groovy'
+    id 'application'
     id 'idea'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.3.1'
@@ -32,6 +33,8 @@ group = 'org.yukung'
 targetCompatibility = sourceCompatibility = javaVersion
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
 
+mainClassName = 'org.yukung.girkit.GirkitCli'
+
 repositories {
     jcenter()
 }
@@ -40,6 +43,7 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
     compile 'javax.jmdns:jmdns:3.4.1'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
+    runtime 'commons-cli:commons-cli:1.3.1'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
 
