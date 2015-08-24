@@ -28,6 +28,7 @@ e.g.
 """)
 
 cli.with {
+    l longOpt: 'list', 'show list of IR Data and Devices'
     v longOpt: 'version', 'show version'
     h longOpt: 'help', 'show help'
 }
@@ -45,4 +46,8 @@ if (options.v) {
 if (options.h) {
     cli.usage()
     System.exit 0
+}
+
+if (options.l) {
+    println "~> ${Data.DATA_FILE}"
 }
