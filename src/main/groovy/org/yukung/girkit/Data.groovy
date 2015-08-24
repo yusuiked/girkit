@@ -21,6 +21,6 @@ package org.yukung.girkit
  */
 class Data {
 
-    static
-    final String DATA_FILE = System.getenv('IRKIT_DATA_FILE') ?: "${System.getProperty('user.home')}${File.separator}.irkit.json"
+    static final String DATA_FILE = System.getenv('IRKIT_DATA_FILE') ?:
+            "${System.getProperty('user.home')}${File.separator}.irkit.json"
 }
