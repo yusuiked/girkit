@@ -16,11 +16,34 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+import java.nio.file.Files
+import java.nio.file.Paths
+
 /**
  * @author yukung
  */
-class Data {
+@Singleton
+class App {
 
     static final String DATA_FILE = System.getenv('IRKIT_DATA_FILE') ?:
             "${System.getProperty('user.home')}${File.separator}.irkit.json"
+
+    static data
+
+    static {
+        if (Files.exists(Paths.get(DATA_FILE))) {
+            data = new JsonSlurper().parse(new File(DATA_FILE))
+        } else {
+            data = [IR: [:], Device: [:]]
+        }
+    }
+
+    static save() {
+        new File(DATA_FILE).withWriter { writer ->
+            writer.write(JsonOutput.toJson(data))
+        }
+    }
 }

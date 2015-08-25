@@ -49,5 +49,17 @@ if (options.h) {
 }
 
 if (options.l) {
-    println "~> ${Data.DATA_FILE}"
+    println "~> ${App.DATA_FILE}"
+    println '== Data'
+    App.data['IR'].each { k, v ->
+        println k
+    }
+    println '== Devices'
+    App.data['Device'].each { k, v ->
+        println "${k}\tInternet API"
+    }
+    Device.find().each { device ->
+        println "${device.address}\t${device.instanceName} (bonjour)"
+    }
+    System.exit 0
 }
