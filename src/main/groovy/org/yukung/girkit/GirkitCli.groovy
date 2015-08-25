@@ -16,11 +16,14 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonOutput
+
 cli = new CliBuilder(usage: 'girkit [option] <command>', header: 'options:', footer: """
 e.g.
  \$ girkit --get tv_on
  \$ girkit --post tv_on
  \$ girkit --post tv_on --address 192.168.0.123
+ \$ girkit --show tv_on
  \$ girkit --delete tv_on
  \$ girkit --device:add myhouse
  \$ girkit --post tv_on --device myhouse
@@ -28,6 +31,7 @@ e.g.
 """)
 
 cli.with {
+    s longOpt: 'show', args: 1, argName: 'command', 'print IR Data'
     l longOpt: 'list', 'show list of IR Data and Devices'
     v longOpt: 'version', 'show version'
     h longOpt: 'help', 'show help'
@@ -43,7 +47,8 @@ if (options.v) {
     System.exit 0
 }
 
-if (options.h) {
+if (options.h ||
+        (!options.l && !options.s)) {
     cli.usage()
     System.exit 0
 }
@@ -61,5 +66,11 @@ if (options.l) {
     Device.find().each { device ->
         println "${device.address}\t${device.instanceName} (bonjour)"
     }
+    System.exit 0
+}
+
+if (options.s) {
+    def name = options.s
+    println JsonOutput.toJson(App.data['IR']."$name")
     System.exit 0
 }
