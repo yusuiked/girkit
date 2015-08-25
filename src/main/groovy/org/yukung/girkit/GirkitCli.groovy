@@ -31,6 +31,7 @@ e.g.
 """)
 
 cli.with {
+    d longOpt: 'delete', args: 1, argName: 'command', 'delete IR Data'
     s longOpt: 'show', args: 1, argName: 'command', 'print IR Data'
     l longOpt: 'list', 'show list of IR Data and Devices'
     v longOpt: 'version', 'show version'
@@ -48,7 +49,7 @@ if (options.v) {
 }
 
 if (options.h ||
-        (!options.l && !options.s)) {
+        (!options.l && !options.d && !options.s)) {
     cli.usage()
     System.exit 0
 }
@@ -70,7 +71,17 @@ if (options.l) {
 }
 
 if (options.s) {
-    def name = options.s
+    name = options.s
     println JsonOutput.toJson(App.data['IR']."$name")
+    System.exit 0
+}
+
+if (options.d) {
+    name = options.d
+    print "delete IR-Data \"${name}\"? [Y/n] > "
+    if (new Scanner(System.in).next().trim().toLowerCase() ==~ /n/) System.exit 1
+    App.data['IR'].remove(name)
+    App.save()
+    println "\"${name}\" delete!"
     System.exit 0
 }
