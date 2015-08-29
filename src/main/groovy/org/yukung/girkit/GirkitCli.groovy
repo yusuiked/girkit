@@ -25,6 +25,7 @@ e.g.
  \$ girkit --post tv_on --address 192.168.0.123
  \$ girkit --show tv_on
  \$ girkit --delete tv_on
+ \$ girkit --rename tv_on,newname
  \$ girkit --device:add myhouse
  \$ girkit --post tv_on --device myhouse
  \$ girkit --device:delete myhouse
@@ -32,6 +33,7 @@ e.g.
 
 cli.with {
     d longOpt: 'delete', args: 1, argName: 'command', 'delete IR Data'
+    _ longOpt: 'rename', args: 2, argName: 'target,NEWNAME', valueSeparator: ',' as char, 'rename IR Data'
     s longOpt: 'show', args: 1, argName: 'command', 'print IR Data'
     l longOpt: 'list', 'show list of IR Data and Devices'
     v longOpt: 'version', 'show version'
@@ -49,7 +51,7 @@ if (options.v) {
 }
 
 if (options.h ||
-        (!options.l && !options.d && !options.s)) {
+        (!options.l && !options.d && !options.s && !options.'rename')) {
     cli.usage()
     System.exit 0
 }
@@ -80,8 +82,24 @@ if (options.d) {
     name = options.d
     print "delete IR-Data \"${name}\"? [Y/n] > "
     if (new Scanner(System.in).next().trim().toLowerCase() ==~ /n/) System.exit 1
-    App.data['IR'].remove(name)
+    App.data['IR'].remove name
     App.save()
     println "\"${name}\" delete!"
+    System.exit 0
+}
+
+if (options.'rename') {
+    name = options.'renames'[0]
+    newname = options.'renames'[1]
+    if (!App.data['IR'].any()) {
+        System.err.println "IR Data \"${name}\" not found"
+        System.exit 1
+    }
+    print "rename IR-Data \"${name}\" to \"${newname}?\" [Y/n] > "
+    if (new Scanner(System.in).next().trim().toLowerCase() ==~ /n/) System.exit 1
+    App.data['IR'][newname] = App.data['IR'][name]
+    if (name != newname) App.data['IR'].remove name
+    App.save()
+    println "\"${name}\" to \"${newname}\" rename!"
     System.exit 0
 }
