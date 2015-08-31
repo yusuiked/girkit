@@ -15,7 +15,6 @@
  */
 
 package org.yukung.girkit
-
 import groovy.json.JsonOutput
 
 cli = new CliBuilder(usage: 'girkit [option] <command>', header: 'options:', footer: """
@@ -33,6 +32,7 @@ e.g.
 
 cli.with {
     g longOpt: 'get', args: 1, argName: 'command', 'get IR Data'
+    p longOpt: 'post', args: 1, argName: 'command', 'post IR Data'
     d longOpt: 'delete', args: 1, argName: 'command', 'delete IR Data'
     _ longOpt: 'rename', args: 2, argName: 'target,NEWNAME', valueSeparator: ',' as char, 'rename IR Data'
     s longOpt: 'show', args: 1, argName: 'command', 'print IR Data'
@@ -56,7 +56,7 @@ if (options.v) {
 }
 
 if (options.h ||
-        (!options.g && !options.l && !options.d
+        (!options.g && !options.p && !options.l && !options.d
                 && !options.'rename' && !options.s
                 && !options.'device'
                 && !options.'device:show' && !options.'device:delete')) {
@@ -170,4 +170,24 @@ if (options.g) {
     App.save()
     println "\"${name}\" saved!"
     System.exit 0
+}
+
+if (options.p) {
+    name = options.p
+    println "post \"${name}\""
+    irData = App.data['IR'][name]
+    if (!irData) {
+        System.err.println "IR Data \"${name}\" not found"
+        System.exit 1
+    }
+    try {
+        res = irkit.postMessages irData
+        if (res.status == 200) {
+            println 'success!'
+        } else {
+            println "unsuccessful, HTTP Status: ${res.status}"
+        }
+    } catch (e) {
+        System.err.println "${e.response.status} ${e.message}"
+    }
 }
