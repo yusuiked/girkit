@@ -15,6 +15,7 @@
  */
 
 package org.yukung.girkit
+
 import groovy.json.JsonOutput
 
 cli = new CliBuilder(usage: 'girkit [option] <command>', header: 'options:', footer: """
@@ -39,6 +40,7 @@ cli.with {
     l longOpt: 'list', 'show list of IR Data and Devices'
     a longOpt: 'address', args: 1, argName: 'IP address', 'IRKit IP Address'
     _ longOpt: 'device', args: 1, argName: 'device', 'use Internet API'
+    _ longOpt: 'device:add', args: 1, argName: 'device', 'save clientkey and deviceid for Internet API'
     _ longOpt: 'device:delete', args: 1, argName: 'device', 'delete clientkey and deviceid'
     _ longOpt: 'device:show', args: 1, argName: 'device', 'print clientkey and deviceid'
     v longOpt: 'version', 'show version'
@@ -58,7 +60,7 @@ if (options.v) {
 if (options.h ||
         (!options.g && !options.p && !options.l && !options.d
                 && !options.'rename' && !options.s
-                && !options.'device'
+                && !options.'device' && !options.'device:add'
                 && !options.'device:show' && !options.'device:delete')) {
     cli.usage()
     System.exit 0
@@ -190,4 +192,21 @@ if (options.p) {
     } catch (e) {
         System.err.println "${e.response.status} ${e.message}"
     }
+}
+
+if (options.'device:add') {
+    name = options.'device:add'
+    if (App.data['Device'].containsKey(name)) {
+        print "overwrite \"${name}\" [Y/n] > "
+        if (new Scanner(System.in).next().trim().toLowerCase() ==~ /n/) System.exit 1
+    }
+    token = irkit.getToken()
+    info = irkit.getClientKeyAndDeviceId(token)
+
+    println "clientkey:\t${info.clientkey}"
+    println "deviceid:\t${info.deviceid}"
+    App.data['Device'][name] = info
+    App.save()
+    println "\"${name}\" saved!"
+    System.exit 0
 }
