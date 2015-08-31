@@ -36,6 +36,7 @@ cli.with {
     _ longOpt: 'rename', args: 2, argName: 'target,NEWNAME', valueSeparator: ',' as char, 'rename IR Data'
     s longOpt: 'show', args: 1, argName: 'command', 'print IR Data'
     l longOpt: 'list', 'show list of IR Data and Devices'
+    _ longOpt: 'device:delete', args: 1, argName: 'device', 'delete clientkey and deviceid'
     _ longOpt: 'device:show', args: 1, argName: 'device', 'print clientkey and deviceid'
     v longOpt: 'version', 'show version'
     h longOpt: 'help', 'show help'
@@ -53,7 +54,7 @@ if (options.v) {
 
 if (options.h ||
         (!options.l && !options.d && !options.s && !options.'rename'
-                && !options.'device:show')) {
+                && !options.'device:show' && !options.'device:delete')) {
     cli.usage()
     System.exit 0
 }
@@ -109,5 +110,15 @@ if (options.'rename') {
 if (options.'device:show') {
     name = options.'device:show'
     println JsonOutput.toJson(App.data['Device'][name])
+    System.exit 0
+}
+
+if (options.'device:delete') {
+    name = options.'device:delete'
+    print "delete Device \"${name}\"? [Y/n] > "
+    if (new Scanner(System.in).next().trim().toLowerCase() ==~ /n/) System.exit 1
+    App.data['Device'].remove name
+    App.save()
+    println "\"${name}\" delete!"
     System.exit 0
 }
