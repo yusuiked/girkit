@@ -22,5 +22,5 @@ if (!irData) {
 println irData.dump()
 
 println 'rewrite IR data'
-irkit.postMessages(irData.message)
+irkit.postMessages irData.message
 irData.dump()

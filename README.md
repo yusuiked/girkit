@@ -73,7 +73,7 @@ if (!irkit) {
 
 token = irkit.getToken()
 println "token:\t${token}"
-res = irkit.getClientKeyAndDeviceId(token)
+res = irkit.getClientKeyAndDeviceId token
 
 println "clientkey:\t${res.clientkey}"
 println "deviceid:\t${res.deviceid}"
@@ -102,7 +102,7 @@ if (!irData) {
 println irData.dump()
 
 println 'rewrite IR data'
-irkit.postMessages(irData.message)
+irkit.postMessages irData.message
 irData.dump()
 ```
 
@@ -114,7 +114,7 @@ Available from jCenter repository.
 #### Grape
 
 ```groovy
-@Grab(group='org.yukung', module='girkit', version='0.0.1')
+@Grab(group='org.yukung', module='girkit', version='0.1.0')
 ```
 
 #### Gradle
@@ -125,7 +125,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.yukung', name: 'girkit', version: '0.0.1'
+    compile group: 'org.yukung', name: 'girkit', version: '0.1.0'
 }
 ```
 

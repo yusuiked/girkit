@@ -10,7 +10,7 @@ if (!irkit) {
 
 token = irkit.getToken()
 println "token:\t${token}"
-res = irkit.getClientKeyAndDeviceId(token)
+res = irkit.getClientKeyAndDeviceId token
 
 println "clientkey:\t${res.clientkey}"
 println "deviceid:\t${res.deviceid}"
