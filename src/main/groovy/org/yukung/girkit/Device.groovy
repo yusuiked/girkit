@@ -36,6 +36,11 @@ class Device {
         "http://$address.hostAddress/"
     }
 
+    @Override
+    String toString() {
+        return "<${this.class.name} address=\"${address.hostAddress}\" bonjourName=\"${instanceName ?: ''}\">"
+    }
+
     static List<Device> find() {
         def hosts = []
         def jmdns = JmDNS.create()
