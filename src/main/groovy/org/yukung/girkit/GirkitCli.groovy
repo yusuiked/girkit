@@ -149,7 +149,7 @@ if (!irkit) {
     System.exit 1
 }
 
-println "using ${irkit.dump()}"
+println "using ${irkit}"
 
 if (options.g) {
     name = options.g
@@ -203,8 +203,8 @@ if (options.'device:add') {
     token = irkit.getToken()
     info = irkit.getClientKeyAndDeviceId(token)
 
-    println "clientkey:\t${info.clientkey}"
-    println "deviceid:\t${info.deviceid}"
+    println "clientkey:\t${info.clientkey[0..6]}XXXXXX"
+    println "deviceid:\t${info.deviceid[0..6]}XXXXXX"
     App.data['Device'][name] = info
     App.save()
     println "\"${name}\" saved!"

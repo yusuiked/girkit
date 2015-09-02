@@ -32,6 +32,11 @@ class InternetAPI {
         "https://api.getirkit.com/1/"
     }
 
+    @Override
+    String toString() {
+        return "<${this.class.name} deviceid=\"${deviceId[0..6]}XXXXX\" clientkey=\"${clientKey[0..6]}XXXXX\">"
+    }
+
     def getMessages(query = [:]) {
         query << [clientkey: clientKey]
         def client = new RESTClient(url())
