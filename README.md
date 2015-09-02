@@ -22,9 +22,30 @@ Requirement
 Usage
 ----
 
+### girkit CLI
+
+```console
+$ girkit --help
+$ girkit --get tv_on
+$ girkit --post tv_on
+$ girkit --post tv_on --address 192.168.0.123
+$ girkit --list
+$ girkit --delete tv_on
+```
+
+#### use Internet API
+
+```console
+$ girkit --device:add myhouse
+$ girkit --post tv_on --device myhouse
+$ girkit --device:delete myhouse
+```
+
+### IRKit client for Groovy
+
 See [samples](https://github.com/yukung/girkit/tree/master/src/test/resources/samples)
 
-### Read/Write IR-Data
+#### Read/Write IR-Data
 
 IRKit has a HTTP API that can be used from within the same LAN.
 
@@ -56,7 +77,7 @@ irkit.postMessages irData
 println irData.dump()
 ```
 
-### Internet API
+#### Internet API
 
 To access IRKit from outside of the LAN, use Internet API. it uses `api.getirkit.com` as a proxy.
 
@@ -79,7 +100,7 @@ println "clientkey:\t${res.clientkey}"
 println "deviceid:\t${res.deviceid}"
 ```
 
-#### Read/Write with Internet API
+##### Read/Write with Internet API
 
 ```groovy
 CLIENT_KEY = System.getenv('CLIENT_KEY') ?: 'your_client_key'
