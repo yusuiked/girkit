@@ -130,12 +130,27 @@ irData.dump()
 Installation
 ----
 
+### girkit CLI
+
+Download [archive file](https://github.com/yukung/girkit/releases) from release page. and unzip the archive file.
+
+Or, for local install
+
+```console
+$ git clone https://github.com/yukung/girkit.git
+$ ./gradlew installDist
+```
+
+will be installed under the `(project root)/build/install` directory.
+
+### girkit API
+
 Available from jCenter repository.
 
 #### Grape
 
 ```groovy
-@Grab(group='org.yukung', module='girkit', version='0.1.0')
+@Grab(group='org.yukung', module='girkit', version='0.2.0')
 ```
 
 #### Gradle
@@ -146,7 +161,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.yukung', name: 'girkit', version: '0.1.0'
+    compile group: 'org.yukung', name: 'girkit', version: '0.2.0'
 }
 ```
 
