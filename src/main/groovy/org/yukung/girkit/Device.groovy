@@ -65,11 +65,11 @@ class Device {
         })
         (1..5).find {
             if (!hosts.empty) {
-                jmdns.close()
                 return true
             }
             Thread.sleep 1000
         }
+        jmdns.close()
         hosts
     }
 
