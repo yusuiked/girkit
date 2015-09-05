@@ -77,7 +77,7 @@ if (options.l) {
         println "${k}\tInternet API"
     }
     Device.find().each { device ->
-        println "${device.address}\t${device.instanceName} (bonjour)"
+        println "${device.address.hostAddress}\t${device.instanceName} (bonjour)"
     }
     System.exit 0
 }
