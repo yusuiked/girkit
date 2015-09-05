@@ -18,7 +18,6 @@ package org.yukung.girkit
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovy.util.logging.Slf4j
 import groovyx.net.http.RESTClient
 
 import javax.jmdns.JmDNS
@@ -31,7 +30,6 @@ import static groovyx.net.http.ContentType.URLENC
 /**
  * @author yukung
  */
-@Slf4j
 class Device {
     InetAddress address
     String instanceName
@@ -51,13 +49,11 @@ class Device {
         jmdns.addServiceListener('_irkit._tcp.local.', new ServiceListener() {
             @Override
             void serviceAdded(ServiceEvent event) {
-                log.info("Service added: bonjourName is ${event.name}")
                 jmdns.requestServiceInfo(event.type, event.name)
             }
 
             @Override
             void serviceRemoved(ServiceEvent event) {
-                log.info("Service removed: bonjourName is ${event.name}")
             }
 
             @Override
@@ -65,13 +61,11 @@ class Device {
                 if (event.name =~ /(?i)irkit/) {
                     event.info.inet4Addresses.each { hosts << new Device(address: it, instanceName: event.name) }
                 }
-                log.info("Service resolved: bonjourName is ${event.name}")
             }
         })
         (1..5).find {
             if (!hosts.empty) {
                 jmdns.close()
-                log.info("find device: [${hosts.join(',')}")
                 return true
             }
             Thread.sleep 1000
