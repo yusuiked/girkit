@@ -150,7 +150,7 @@ Available from jCenter repository.
 #### Grape
 
 ```groovy
-@Grab(group='org.yukung', module='girkit', version='0.2.0')
+@Grab(group='org.yukung', module='girkit', version='0.2.1')
 ```
 
 #### Gradle
@@ -161,7 +161,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.yukung', name: 'girkit', version: '0.2.0'
+    compile group: 'org.yukung', name: 'girkit', version: '0.2.1'
 }
 ```
 
