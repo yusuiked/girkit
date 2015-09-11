@@ -18,6 +18,7 @@ package org.yukung.girkit
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.apache.commons.validator.routines.UrlValidator
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -34,8 +35,10 @@ class App {
     static data
 
     static {
-        if (Files.exists(Paths.get(DATA_FILE))) {
-            data = new JsonSlurper().parse(new File(DATA_FILE))
+        if (Files.exists(Paths.get(DATA_FILE)) || new UrlValidator(['http', 'https'] as String[]).isValid(DATA_FILE)) {
+            data = new JsonSlurper().parse(
+                    DATA_FILE.startsWith('http') ? DATA_FILE.toURL() : Paths.get(DATA_FILE).toUri().toURL()
+            )
         } else {
             data = [IR: [:], Device: [:]]
         }
