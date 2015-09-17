@@ -24,7 +24,6 @@ import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceListener
 
-import static groovyx.net.http.ContentType.TEXT
 import static groovyx.net.http.ContentType.URLENC
 
 /**
@@ -75,18 +74,20 @@ class Device {
 
     def getMessages() {
         def client = new RESTClient(url())
-        def res = client.get(path: 'messages', contentType: TEXT)
+        def res = client.get(path: 'messages', headers: ['X-Requested-With': 'curl'])
         res.data.length > 0 ? new JsonSlurper().parse(res.data) : [:]
     }
 
     def postMessages(data) {
         def client = new RESTClient(url())
-        client.post(path: 'messages', contentType: TEXT, body: JsonOutput.toJson(data))
+        client.post(path: 'messages', headers: ['X-Requested-With': 'curl'],
+                body: JsonOutput.toJson(data), requestContentType: URLENC)
     }
 
     def getToken() {
         def client = new RESTClient(url())
-        def res = client.post(path: 'keys', contentType: TEXT, body: '{}')
+        def res = client.post(path: 'keys', headers: ['X-Requested-With': 'curl'],
+                body: '', requestContentType: URLENC)
         res.status == 200 ? new JsonSlurper().parse(res.data).clienttoken : ''
     }
 
@@ -95,7 +96,7 @@ class Device {
             throw new IllegalArgumentException('token must be String')
         }
         def client = new RESTClient("https://api.getirkit.com/1/")
-        def res = client.post(path: 'keys', requestContentType: URLENC, body: [clienttoken: clientToken])
+        def res = client.post(path: 'keys', body: [clienttoken: clientToken], requestContentType: URLENC)
         res.status == 200 ? res.data : [:]
     }
 }
