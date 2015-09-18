@@ -16,15 +16,13 @@
 
 package org.yukung.girkit
 
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovyx.net.http.RESTClient
+import wslite.rest.ContentType
+import wslite.rest.RESTClient
 
 import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceListener
-
-import static groovyx.net.http.ContentType.URLENC
 
 /**
  * @author yukung
@@ -75,20 +73,24 @@ class Device {
     def getMessages() {
         def client = new RESTClient(url())
         def res = client.get(path: 'messages', headers: ['X-Requested-With': 'curl'])
-        res.data.length > 0 ? new JsonSlurper().parse(res.data) : [:]
+        res.data.size() > 0 ? new JsonSlurper().parse(res.data) : [:]
     }
 
     def postMessages(data) {
         def client = new RESTClient(url())
-        client.post(path: 'messages', headers: ['X-Requested-With': 'curl'],
-                body: JsonOutput.toJson(data), requestContentType: URLENC)
+        client.post(path: 'messages', headers: ['X-Requested-With': 'curl']) {
+            type ContentType.URLENC
+            json data
+        }
     }
 
     def getToken() {
         def client = new RESTClient(url())
-        def res = client.post(path: 'keys', headers: ['X-Requested-With': 'curl'],
-                body: '', requestContentType: URLENC)
-        res.status == 200 ? new JsonSlurper().parse(res.data).clienttoken : ''
+        def res = client.post(path: 'keys', headers: ['X-Requested-With': 'curl']) {
+            type ContentType.URLENC
+            text ''
+        }
+        res.statusCode == 200 ? new JsonSlurper().parse(res.data).clienttoken : ''
     }
 
     def getClientKeyAndDeviceId(clientToken) {
@@ -96,7 +98,10 @@ class Device {
             throw new IllegalArgumentException('token must be String')
         }
         def client = new RESTClient("https://api.getirkit.com/1/")
-        def res = client.post(path: 'keys', body: [clienttoken: clientToken], requestContentType: URLENC)
-        res.status == 200 ? res.data : [:]
+        def res = client.post(path: 'keys') {
+            type ContentType.URLENC
+            urlenc clienttoken: clientToken
+        }
+        res.statusCode == 200 ? new JsonSlurper().parse(res.data) : [:]
     }
 }

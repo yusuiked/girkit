@@ -17,9 +17,9 @@
 package org.yukung.girkit
 
 import groovy.json.JsonSlurper
-import groovyx.net.http.HttpResponseException
 import spock.lang.IgnoreIf
 import spock.lang.Specification
+import wslite.rest.RESTClientException
 
 /**
  * @author yukung
@@ -63,10 +63,10 @@ class InternetAPISpec extends Specification {
         device.getMessages()
 
         then:
-        def e = thrown(HttpResponseException)
+        def e = thrown(RESTClientException)
 
         and:
-        e.message == 'Unauthorized'
+        e.message == '401 Unauthorized'
     }
 
     def "should post messages"() {
@@ -80,6 +80,6 @@ class InternetAPISpec extends Specification {
         device.postMessages(irData)
 
         then:
-        notThrown(HttpResponseException)
+        notThrown(RESTClientException)
     }
 }

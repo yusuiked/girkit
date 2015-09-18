@@ -17,10 +17,9 @@
 package org.yukung.girkit
 
 import groovy.json.JsonSlurper
-import groovyx.net.http.HttpResponseException
 import spock.lang.IgnoreIf
 import spock.lang.Specification
-
+import wslite.rest.RESTClientException
 
 /**
  * @author yukung
@@ -72,7 +71,7 @@ class DeviceSpec extends Specification {
         device.postMessages(msg)
 
         then:
-        notThrown(HttpResponseException)
+        notThrown(RESTClientException)
     }
 
     @IgnoreIf({ env.CI })
