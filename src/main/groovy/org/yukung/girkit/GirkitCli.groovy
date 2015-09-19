@@ -15,7 +15,6 @@
  */
 
 package org.yukung.girkit
-
 import groovy.json.JsonOutput
 
 cli = new CliBuilder(usage: 'girkit [option] <command>', header: 'options:', footer: """
@@ -184,13 +183,13 @@ if (options.p) {
     }
     try {
         res = irkit.postMessages irData
-        if (res.status == 200) {
+        if (res.statusCode == 200) {
             println 'success!'
         } else {
-            println "unsuccessful, HTTP Status: ${res.status}"
+            println "unsuccessful, HTTP Status: ${res.statusCode}"
         }
     } catch (e) {
-        System.err.println "${e.response.status} ${e.message}"
+        System.err.println "${e.response.statusCode} ${e.response.statusMessage} ${e.message}"
     }
 }
 
