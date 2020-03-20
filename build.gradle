@@ -136,6 +136,6 @@ bintray {
 
 afterReleaseBuild.dependsOn bintrayUpload
 
-task wrapper(type: Wrapper) {
+wrapper {
     gradleVersion = '2.13'
 }
