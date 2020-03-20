@@ -137,5 +137,5 @@ bintray {
 afterReleaseBuild.dependsOn bintrayUpload
 
 wrapper {
-    gradleVersion = '2.13'
+    gradleVersion = '6.2.2'
 }
