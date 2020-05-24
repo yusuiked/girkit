@@ -18,39 +18,49 @@ package org.yukung.girkit
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovy.transform.Immutable
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
+import wslite.rest.RESTClientException
 
 /**
  * @author yukung
  */
-@Immutable
 class InternetAPI {
-    String clientKey, deviceId
+    static final url = "https://api.getirkit.com/1/"
+    final String clientKey, deviceId
+    final RESTClient client
 
-    private static url() {
-        "https://api.getirkit.com/1/"
+    InternetAPI(clientKey, deviceId, client) {
+        this.clientKey = clientKey
+        this.deviceId = deviceId
+        this.client = client
+    }
+
+    def postMessages(List irData) {
+        try {
+            client.post(path: 'messages') {
+                type ContentType.URLENC
+                urlenc deviceid: deviceId, clientkey: clientKey, message: JsonOutput.toJson(irData)
+            }
+            return true
+        } catch (RESTClientException e) {
+            throw new IRKitException(e.getMessage(), e)
+        }
+        return false
+    }
+
+    def getMessages(Map query = [:]) {
+        query << [clientkey: clientKey]
+        try {
+            def res = client.get(path: 'messages', query: query)
+            res.data.size() > 0 ? new JsonSlurper().parse(res.data) as Map : [:]
+        } catch (RESTClientException e) {
+            throw new IRKitException(e.getMessage(), e)
+        }
     }
 
     @Override
     String toString() {
         return "<${this.class.name} deviceid=\"${deviceId[0..6]}XXXXX\" clientkey=\"${clientKey[0..6]}XXXXX\">"
-    }
-
-    def getMessages(query = [:]) {
-        query << [clientkey: clientKey]
-        def client = new RESTClient(url())
-        def res = client.get(path: 'messages', query: query)
-        res.data.size() > 0 ? new JsonSlurper().parse(res.data) : [:]
-    }
-
-    def postMessages(irData) {
-        def body = [deviceid: deviceId, clientkey: clientKey, message: JsonOutput.toJson(irData)]
-        def client = new RESTClient(url())
-        client.post(path: 'messages') {
-            type ContentType.URLENC
-            urlenc body
-        }
     }
 }

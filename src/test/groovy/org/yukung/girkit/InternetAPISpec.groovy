@@ -16,25 +16,88 @@
 
 package org.yukung.girkit
 
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import spock.lang.IgnoreIf
+import spock.lang.Shared
 import spock.lang.Specification
+import wslite.http.HTTPRequest
+import wslite.http.HTTPResponse
+import wslite.rest.RESTClient
 import wslite.rest.RESTClientException
+import wslite.rest.Response
 
 /**
  * @author yukung
  */
 class InternetAPISpec extends Specification {
 
-    @IgnoreIf({ env.CI })
-    def "should get messages"() {
-        given:
-        def CLIENT_KEY = System.getenv('CLIENT_KEY')
-        def DEVICE_ID = System.getenv('DEVICE_ID')
-        def device = new InternetAPI(clientKey: CLIENT_KEY, deviceId: DEVICE_ID)
+    @Shared
+    def messages
+
+    def setupSpec() {
+        def builder = new JsonBuilder()
+        builder {
+            message new JsonSlurper().parse(getClass().getResource('/test.json'))
+            hostname 'IRKitD2A4'    // Dummy
+            deviceid 'FBEC7F5148274DADB608799D43175FD1' // Dummy
+        }
+        messages = builder.content
+    }
+
+    def "should post messages"() {
+        given: 'Mock InternetAPI'
+        def client = Mock(RESTClient)
+        def mockResponse = new HTTPResponse()
+        mockResponse.with {
+            statusCode = 200
+            statusMessage = 'OK'
+        }
+        client.post(*_) >> new Response(new HTTPRequest(), mockResponse)
+        def irkit = new InternetAPI('clientKey', messages.deviceid, client)
 
         when:
-        def irData = device.getMessages()
+        def res = irkit.postMessages(messages.message as List)
+
+        then:
+        notThrown(IRKitException)
+
+        and:
+        res == true
+    }
+
+    def "should throw IRKitException with invalid clientkey or deviceid"() {
+        given: 'Mock InternetAPI'
+        def client = Mock(RESTClient)
+        def mockResponse = new HTTPResponse()
+        mockResponse.with {
+            statusCode = 401
+            statusMessage = 'Unauthorized'
+        }
+        client.post(*_) >> { throw new RESTClientException(mockResponse.statusMessage, new HTTPRequest(), mockResponse) }
+        def irkit = new InternetAPI('invalid clientkey', 'invalid deviceid', client)
+
+        when:
+        irkit.postMessages(messages.message as List)
+
+        then:
+        thrown(IRKitException)
+    }
+
+    def "should get messages"() {
+        given: 'Mock InternetAPI'
+        def client = Mock(RESTClient)
+        def mockResponse = new HTTPResponse()
+        mockResponse.with {
+            statusCode = 200
+            statusMessage = 'OK'
+            data = JsonOutput.toJson(messages)
+        }
+        client.get(*_) >> new Response(new HTTPRequest(), mockResponse)
+        def irkit = new InternetAPI('clientKey', messages.deviceid, client)
+
+        when:
+        def irData = irkit.getMessages()
 
         then:
         irData != null
@@ -49,37 +112,27 @@ class InternetAPISpec extends Specification {
         irData.message.data.class == ArrayList
 
         and:
-        irData.hostname =~ /(?i)irkit/
+        irData.hostname == messages.hostname
 
         and:
-        irData.deviceid == DEVICE_ID
+        irData.deviceid == messages.deviceid
     }
 
     def "should throw HttpResponseException with invalid clientkey or deviceid"() {
-        given:
-        def device = new InternetAPI(clientKey: 'invalid clientkey', deviceId: 'invalid deviceid')
+        given: 'Mock InternetAPI'
+        def client = Mock(RESTClient)
+        def mockResponse = new HTTPResponse()
+        mockResponse.with {
+            statusCode = 401
+            statusMessage = 'Unauthorized'
+        }
+        client.get(*_) >> { throw new RESTClientException(mockResponse.statusMessage, new HTTPRequest(), mockResponse) }
+        def irkit = new InternetAPI('invalid clientkey', 'invalid deviceid', client)
 
         when:
-        device.getMessages()
+        irkit.getMessages()
 
         then:
-        def e = thrown(RESTClientException)
-
-        and:
-        e.message == '401 Unauthorized'
-    }
-
-    def "should post messages"() {
-        given:
-        def CLIENT_KEY = System.getenv('CLIENT_KEY')
-        def DEVICE_ID = System.getenv('DEVICE_ID')
-        def device = new InternetAPI(clientKey: CLIENT_KEY, deviceId: DEVICE_ID)
-        def irData = new JsonSlurper().parse(getClass().getResource('/test.json'))
-
-        when:
-        device.postMessages(irData)
-
-        then:
-        notThrown(RESTClientException)
+        thrown(IRKitException)
     }
 }
